@@ -1,0 +1,110 @@
+const movieService = require('../services/movie.services.js');
+const {successResponseBody, errorResponseBody} = require('../utils/responsebody.js');
+
+
+const createMovie = async (req, res) => {
+    try{
+        const response = await movieService.createMovie(req.body);
+        
+        if(response.err){
+            errorResponseBody.message = 'Validation failed on some parameter';
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+
+        successResponseBody.message = 'successfully created movie';
+        successResponseBody.data = response;
+        res.status(201).json(successResponseBody);
+
+    }catch(err){
+      console.log(err);
+      
+      res.status(500).json(errorResponseBody);
+
+    }
+};
+
+const deleteMovie = async (req, res) => {
+    try{
+        const res = await movieService.deleteMovie(req.params.id);
+
+        successResponseBody.message = 'successfully deleted the movie';
+        successResponseBody.data = res;
+
+        res.status(200).json(successResponseBody);
+
+    }catch(err){
+      console.log(err);
+      
+       res.status(500).json(errorResponseBody);
+
+    }
+};
+
+const getMovie = async (req, res) => {
+    try{
+        const res = await movieService.getMovieById(req.params.id);
+
+        if(res.err){
+            errorResponseBody.error = res.err;
+            return res.status(res.code).json(errorResponseBody);
+        }
+        
+        successResponseBody.data = res;
+        res.status(200).json(successResponseBody);
+
+    }catch(err){
+      console.log(err);
+      
+      res.status(500).json(errorResponseBody);
+
+    }
+};
+
+const updateMovie = async (req, res) => {
+
+    try {
+        const response = await movieService.updateMovie(req.params.id, req.body);
+
+        if(response.err){
+            errorResponseBody.err = response.err;
+            errorResponseBody.message = 'The Validation error';
+            return res.status(response.code).json(errorResponseBody);
+        }
+
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+
+    } catch (error) {
+        
+        console.log(errors);
+        errorResponseBody.err = errors;
+        return res.status(500).json(errorResponseBody);        
+    }
+}
+
+const getMovies = async (req, res) => {
+
+    try {
+        const response = await movieService.fetchMovies(req.query);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);   
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+
+    } catch (error) {
+        console.log(error);
+        errorResponseBody.err = error;
+        return res.status(500).json(errorResponseBody);        
+    }
+}
+
+module.exports = {
+    createMovie,
+    deleteMovie,
+    getMovie,
+    updateMovie,
+    getMovies
+}
