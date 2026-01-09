@@ -9,6 +9,11 @@ const routes = (app) => {
         theatreController.create
     )
 
+    app.delete(
+        '/mba/api/v1/theatres/:id',
+        theatreController.destroy
+    )
+
     app.get(
         '/mba/api/v1/theatres/:id',
         theatreController.getTheatre
@@ -18,6 +23,7 @@ const routes = (app) => {
         '/mba/api/v1/theatres',
         theatreController.getAllTheatres
     )
+
 }
 
 module.exports = routes;
