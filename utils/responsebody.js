@@ -1,13 +1,18 @@
-
+/**
+ * This object will be used as a template for building success response
+ */
 successResponseBody = {
-  error : {},
+  err : {},
   data : {},
   message :  "Successfully processed the request",
   success : true
 }
 
+/**
+ * This object will be used as a template for building error response
+ */
 errorResponseBody = {
-  error : {},
+  err : {},
   data : {},
   message :  "Something went wrong",
   success : false

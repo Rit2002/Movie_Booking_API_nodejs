@@ -1,5 +1,10 @@
 const Theatre = require('../models/theatre.model.js');
 
+/**
+ * 
+ * @param  data --> object containing details of the theatre to be created
+ * @returns ---> returns the object details of new theatre created
+ */
 const createTheatre = async (data) => {
     try {
       const response = await Theatre.create(data);
@@ -18,6 +23,11 @@ const createTheatre = async (data) => {
     }
 }
 
+/**
+ * 
+ * @param  id --> it is the unique id with which we will fetch the perticular movie
+ * @returns ---> returns the object containing details about perticular movie
+ */
 const getTheatre = async (id) => {
   try{
       const response = await Theatre.findById(id);
@@ -32,7 +42,12 @@ const getTheatre = async (id) => {
   }
 }
 
-const getAllTheatres = async () => {
+/**
+ * 
+ * @param  data ---> the data to be used to filter out theatre based on city/pincode
+ * @returns ---> returns the object with the filtered content of the theatre
+ */
+const getAllTheatres = async (data) => {
   try{
     const response = await Theatre.find({});
     return response;
@@ -43,6 +58,11 @@ const getAllTheatres = async () => {
   }
 }
 
+/**
+ * 
+ * @param  id -->using id we can identify the theatre to be deleted
+ * @returns ---> returns the details of the deleted theatre
+ */
 const deleteTheatre = async (id) => {
     try {
       const response = await Theatre.findByIdAndDelete(id);
@@ -58,6 +78,13 @@ const deleteTheatre = async (id) => {
       throw error;      
     }
 }
+
+/**
+ * 
+ * @param  id --> the unique id to identify the theatre to be updated 
+ * @param data --> object to be used to update the theatre
+ * @returns --> returns the new updated theatre object
+ */
 
 module.exports = {
     createTheatre,

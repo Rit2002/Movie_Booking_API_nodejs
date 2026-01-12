@@ -4,7 +4,13 @@ const badReqRes = {
   data : {},
   message : 'Bad Request'
 }
-
+/**
+ * 
+ * @param  req ---> HTTP request Object
+ * @param  res ---> HTTP response Object
+ * @param  next ---> next middleware function
+ * @returns ---> returns whether the req is valid or not
+ */
 const validateMovieCreateReq = async (req, res, next) => {
 
     if(!req.body.name){
