@@ -51,6 +51,7 @@ const getAllTheatres = async (data) => {
   try{
     let query = {};
     let pagination = {};
+
     if(data && data.city){
       query.city = data.city;
     }
@@ -64,16 +65,16 @@ const getAllTheatres = async (data) => {
     }
 
     if(data && data.limit){
-      query.limit = data.limit;
+      pagination.limit = data.limit;
     }
 
     if(data && data.skip){
       let perPage = (data.limit) ? data.limit : 3;
 
-      query.skip = data.skip * perPage;
+      pagination.skip = (data.skip * perPage);
     }
 
-    const response = await Theatre.find(query);
+    const response = await Theatre.find(query, {}, pagination);
     return response;
 
   }catch(error){
@@ -105,9 +106,10 @@ const deleteTheatre = async (id) => {
 
 /**
  * 
- * @param  id --> the unique id to identify the theatre to be updated 
- * @param data --> object to be used to update the theatre
- * @returns --> returns the new updated theatre object
+ * @param  theatreId --> uniquely identifies the theatre
+ * @param  movieIds ---> array containing movie ids to be updated
+ * @param insert --> boolean variable which tells whether to add the movies(if true) or remove the movies(if false)
+ * @returns ---> returns the object containing movie details in a perticular theatre
  */
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   const theatre = await Theatre.findById(theatreId);
@@ -137,10 +139,45 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   return theatre.populate('movies');
 }
 
+/**
+ * 
+ * @param  id ---> theatre id to find theatre
+ * @param  data ---> object containing data to be updated
+ * @returns ---> returns the object containing details of updated theatre
+ */
+const updateTheatre = async (id, data) => {
+  try {
+    const response = await Theatre.findByIdAndUpdate(id, data, {
+      new : true,
+      runValidators : true
+    })
+
+    if(!response){
+      return {
+        err : "No Theatre found for given id",
+        code : 404
+      }
+    }
+
+    return response;
+  } catch (error) {
+    if(error.name == 'ValidationError'){
+        let err = {};
+        Object.keys(error.errors).forEach((key) => {
+          err[key] = error.errors[key].message;
+        })
+
+        return { err : err, code : 422};
+      
+    }
+  }
+}
+
 module.exports = {
     createTheatre,
     getTheatre,
     getAllTheatres,
     deleteTheatre,
-    updateMoviesInTheatres
+    updateMoviesInTheatres,
+    updateTheatre
 }

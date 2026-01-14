@@ -35,14 +35,14 @@ const validateTheatreCreateReq = async (req, res, next) => {
  * @param  next ---> next middleware function
  * @returns ---> returns whether the req is valid or not
  */
-const validateUpdateMovieRequest = async (req, res) => {
+const validateUpdateMovieRequest = async (req, res, next) => {
 
-    if(req.params.insert == undefined){
+    if(req.body.insert == undefined){
         errorResponseBody.message = 'No insert parameter found';
         return res.status(400).json(errorResponseBody);
     }
 
-    if(!req.body.id){
+    if(!req.params.id){
         errorResponseBody.message = 'No Theatre id found';
         return res.status(400).json(errorResponseBody);
     }
@@ -64,6 +64,7 @@ const validateUpdateMovieRequest = async (req, res) => {
 
    next();
 }
+
 
 module.exports = {
     validateTheatreCreateReq,
