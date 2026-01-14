@@ -85,10 +85,38 @@ const deleteTheatre = async (id) => {
  * @param data --> object to be used to update the theatre
  * @returns --> returns the new updated theatre object
  */
+const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
+  const theatre = await Theatre.findById(theatreId);
+  if(!theatre) {
+    return {
+      err : 'No such theatre found for the id provided',
+      code : 404
+    }
+  }
+  if(insert){
+    // Add movie if insert flag is true
+    movieIds.forEach( movieId => {
+      theatre.movies.push(movieId);
+    });
+  }
+  else{
+    // remove movie
+    let savedMovieIds = theatre.movies;
+    movieIds.forEach( movieId => {
+      savedMovieIds = savedMovieIds.filter( smi => smi !== movieId);
+    });
+
+    theatre.movies = savedMovieIds;
+  }
+  // .save() --> Writes the current in-memory state of the document back to MongoDB
+  await theatre.save();
+  return theatre.populate('movies');
+}
 
 module.exports = {
     createTheatre,
     getTheatre,
     getAllTheatres,
-    deleteTheatre
+    deleteTheatre,
+    updateMoviesInTheatres
 }
