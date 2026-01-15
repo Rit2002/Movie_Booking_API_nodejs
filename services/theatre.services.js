@@ -1,5 +1,5 @@
 const Theatre = require('../models/theatre.model.js');
-
+const Movie = require('../models/movies.model.js');
 /**
  * 
  * @param  data --> object containing details of the theatre to be created
@@ -64,6 +64,10 @@ const getAllTheatres = async (data) => {
       query.name = data.name;
     }
 
+    if(data && data.movieId){
+      query.movies = {$all: data.movieId};
+    }
+
     if(data && data.limit){
       pagination.limit = data.limit;
     }
@@ -112,31 +116,37 @@ const deleteTheatre = async (id) => {
  * @returns ---> returns the object containing movie details in a perticular theatre
  */
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
-  const theatre = await Theatre.findById(theatreId);
-  if(!theatre) {
-    return {
-      err : 'No such theatre found for the id provided',
-      code : 404
+  try {
+    let theatre;
+    if(insert){
+      theatre = await Theatre.findByIdAndUpdate(
+        {_id: theatreId},
+        {$addToSet: {movies: {$each: movieIds}}},
+        {new: true}
+      );
     }
-  }
-  if(insert){
-    // Add movie if insert flag is true
-    movieIds.forEach( movieId => {
-      theatre.movies.push(movieId);
-    });
-  }
-  else{
-    // remove movie
-    let savedMovieIds = theatre.movies;
-    movieIds.forEach( movieId => {
-      savedMovieIds = savedMovieIds.filter( smi => smi !== movieId);
-    });
+    else{
+      theatre = await Theatre.findByIdAndUpdate(
+        {_id: theatreId},
+        {$pull: {movies: {$in: movieIds}}},
+        {new: true}
+      );
+    }
 
-    theatre.movies = savedMovieIds;
+    return theatre.populate('movies');
+
+  } catch (error) {
+    console.log(error);
+    
+    if(error.name == 'TypeError'){
+      return {
+        code: 404,
+        message: 'No theatre found for given error'
+      }
+    }
+
+    throw error;
   }
-  // .save() --> Writes the current in-memory state of the document back to MongoDB
-  await theatre.save();
-  return theatre.populate('movies');
 }
 
 /**
@@ -173,11 +183,38 @@ const updateTheatre = async (id, data) => {
   }
 }
 
+/**
+ * 
+ * @param  id --> theatre id to find theatre
+ * @returns  --> returns the object containing details of all the movies running in a specific theatres
+ */
+const getMoviesInATheatre = async (id) => {
+  try {
+    const theatre = await Theatre.findById(id, {name:1, movies:1, address:1}).populate('movies');
+    if(!theatre){
+      return {
+        code : 404,
+        err : 'No theatre found for corresponding id'
+      }
+
+    }
+    
+    return theatre;
+
+  } catch (error) {
+    console.log(error);
+    
+    throw error;
+  }
+}
+
+
 module.exports = {
     createTheatre,
     getTheatre,
     getAllTheatres,
     deleteTheatre,
     updateMoviesInTheatres,
-    updateTheatre
+    updateTheatre,
+    getMoviesInATheatre
 }
