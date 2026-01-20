@@ -1,5 +1,6 @@
 const theatreController = require('../controllers/theatre.controller.js');
 const theatreMiddleware = require('../middlewares/theatre.middleware.js');
+const authMiddleware = require('../middlewares/auth.middleware.js');
 
 const routes = (app) => {
 
@@ -11,6 +12,7 @@ const routes = (app) => {
 
     app.delete(
         '/mba/api/v1/theatres/:id',
+        authMiddleware.isAuthenticated,
         theatreController.destroy
     )
 

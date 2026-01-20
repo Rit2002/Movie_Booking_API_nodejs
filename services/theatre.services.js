@@ -100,8 +100,8 @@ const deleteTheatre = async (id) => {
           err : 'No record of the theatre found for the given id',
           code : 404
         }
-        return response;
       }
+      return response;
     } catch (error) {
       console.log(error);
       throw error;      

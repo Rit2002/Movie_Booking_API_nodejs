@@ -11,7 +11,7 @@ const badReqRes = {
  * @param  next ---> next middleware function
  * @returns ---> returns whether the req is valid or not
  */
-const validateMovieCreateReq = async (req, res, next) => {
+const validateMovieCreateReq =  (req, res, next) => {
 
     if(!req.body.name){
       badReqRes.err = 'The name NOT found';

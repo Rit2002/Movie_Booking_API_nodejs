@@ -35,7 +35,7 @@ const validateTheatreCreateReq = async (req, res, next) => {
  * @param  next ---> next middleware function
  * @returns ---> returns whether the req is valid or not
  */
-const validateUpdateMovieRequest = async (req, res, next) => {
+const validateUpdateMovieRequest =  (req, res, next) => {
 
     if(req.body.insert == undefined){
         errorResponseBody.message = 'No insert parameter found';
