@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 
 const userService = require('../services/user.services.js');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody.js');
+const { STATUS_CODES } = require('../utils/constants.js');
 
 const signUp = async (req , res) => {
     try {
@@ -10,7 +11,7 @@ const signUp = async (req , res) => {
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully registered a user';
 
-        return res.status(201).json(successResponseBody);
+        return res.status(STATUS_CODES.CREATED).json(successResponseBody);
 
     } catch (error) {
 
@@ -20,7 +21,7 @@ const signUp = async (req , res) => {
         }
 
         errorResponseBody.err = error;        
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -31,7 +32,7 @@ const signIn = async (req, res) => {
         if(!isValidPassword){
             throw {
                 err : "Invalid Password",
-                code : 401
+                code : STATUS_CODES.UNAUTHORISED
             }
         }
 
@@ -49,7 +50,7 @@ const signIn = async (req, res) => {
             token : token
         }
 
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS_CODES.OK).json(successResponseBody);
 
     } catch (error) {
         
@@ -59,7 +60,7 @@ const signIn = async (req, res) => {
         }
 
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -69,7 +70,7 @@ const resetPassword = async (req, res) => {
         const isOldPasswordCorrect = await user.isValidPassword(req.body.oldPassword);
 
         if(!isOldPasswordCorrect){
-            throw { err : 'Invalid Old Password', code : 403 };
+            throw { err : 'Invalid Old Password', code : STATUS_CODES.FORBIDDEN };
         }
 
         user.password = req.body.newPassword;
@@ -78,7 +79,7 @@ const resetPassword = async (req, res) => {
         successResponseBody.data = user;
         successResponseBody.message = 'Successfully updated the password for given user';
 
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS_CODES.OK).json(successResponseBody);
 
     } catch (error) {
         console.log(error);
@@ -89,7 +90,7 @@ const resetPassword = async (req, res) => {
         }
 
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(errorResponseBody);
         
     }
 }

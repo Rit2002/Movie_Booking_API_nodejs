@@ -1,4 +1,5 @@
 const userService = require('../services/user.services.js');
+const { STATUS_CODES } = require('../utils/constants.js');
 const { errorResponseBody, successResponseBody } = require('../utils/responsebody.js');
 
 const update = async (req, res) => {
@@ -7,7 +8,7 @@ const update = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'successfully updated the details of given user';
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS_CODES.OK).json(successResponseBody);
         
     } catch (error) {
         console.log(error);
@@ -18,7 +19,7 @@ const update = async (req, res) => {
         }
 
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
