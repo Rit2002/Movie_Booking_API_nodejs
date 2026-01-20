@@ -52,7 +52,6 @@ const signIn = async (req, res) => {
         return res.status(200).json(successResponseBody);
 
     } catch (error) {
-        console.log(error);
         
         if(error.err){
             errorResponseBody.err = error.err;

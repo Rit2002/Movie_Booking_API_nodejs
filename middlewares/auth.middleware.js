@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 
 const { errorResponseBody } = require('../utils/responsebody.js');
 const userService = require('../services/user.services.js');
+const { USER_ROLE } = require('../utils/constants.js');
 
 const validateSignupRequest =  (req, res, next) => {
     // validating name
@@ -79,8 +79,57 @@ const isAuthenticated = async (req, res, next) => {
     }
 }
 
+const validateResetPasswordRequest = (req, res, next) => {
+
+    if(!req.body.oldPassword) {
+        errorResponseBody.err = 'old password is not provided';
+        return res.status(400).json(errorResponseBody);
+    }
+
+    if(!req.body.newPassword) {
+        errorResponseBody.err = 'new password is not provided';
+        return res.status(400).json(errorResponseBody);
+    }
+
+    next();
+}
+
+const isAdmin = async (req, res, next) => {
+    const user = await userService.getUserById(req.user);
+    if(user.userRole != USER_ROLE.admin) {
+        errorResponseBody.err = 'User is NOT ADMIN';
+        return res.status(401).json(errorResponseBody);
+    }
+
+    next();
+}
+
+const isClient = async (req, res, next) => {
+    const user = await userService.getUserById(req.user);
+    if(user.userRole != USER_ROLE.client) {
+        errorResponseBody.err = 'User is NOT CLIENT';
+        return res.status(401).json(errorResponseBody);
+    }
+
+    next();
+}
+
+const isAdminOrClient = async (req, res, next) => {
+    const user = await userService.getUserById(req.user);
+    if(!(user.userRole != USER_ROLE.client || user.userRole != USER_ROLE.admin)) {
+        errorResponseBody.err = 'User is niether an ADMIN nor a CLIENT';
+        return res.status(401).json(errorResponseBody);
+    }
+
+    next();
+}
+
 module.exports = {
     validateSignupRequest,
     validateSignInRequest,
-    isAuthenticated
+    isAuthenticated,
+    validateResetPasswordRequest,
+    isAdmin,
+    isClient,
+    isAdminOrClient
 }
