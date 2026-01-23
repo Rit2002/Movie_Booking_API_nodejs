@@ -10,6 +10,13 @@ const routes = (app) => {
         bookingMiddleware.validateCreateBooking,
         bookingController.create
     );
+
+    app.patch(
+        '/mba/api/v1/booking/:id',
+        authMiddleware.isAuthenticated,
+        bookingMiddleware.canChangeStatus,
+        bookingController.update
+    )
 }
 
 module.exports = routes;

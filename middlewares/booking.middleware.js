@@ -1,7 +1,8 @@
 const { errorResponseBody } = require('../utils/responsebody.js');
-const { STATUS_CODES } = require('../utils/constants.js');
+const { STATUS_CODES, USER_ROLE, BOOKING_STATUS } = require('../utils/constants.js');
 const objectId = require('mongoose').Types.ObjectId;
 const theatreService = require('../services/theatre.services.js');
+const userService = require('../services/user.services.js');
 
 const validateCreateBooking = async (req, res, next) => {
     // validating theatre id presence
@@ -58,6 +59,18 @@ const validateCreateBooking = async (req, res, next) => {
     next();
 }
 
+const canChangeStatus = async (req, res, next) => {
+    const user = await userService.getUserById(req.user);
+
+    if(user.userRole == USER_ROLE.customer && req.body.status && req.body.status != BOOKING_STATUS.cancelled) {
+        errorResponseBody.err = 'You are UNAUTHOSIRED to change the status';
+        return res.status(STATUS_CODES.UNAUTHORISED).json(errorResponseBody);
+    }
+
+    next();
+}
+
 module.exports = {
-    validateCreateBooking
+    validateCreateBooking,
+    canChangeStatus
 }
