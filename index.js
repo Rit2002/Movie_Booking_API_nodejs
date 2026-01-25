@@ -8,6 +8,7 @@ const theatreRoutes = require('./routes/theatre.route.js');
 const authRoutes = require('./routes/auth.routes.js');
 const userRoutes = require('./routes/user.routes.js');
 const bookingRoutes = require('./routes/booking.routes.js');
+const showRoutes = require('./routes/show.routes.js');
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ theatreRoutes(app);
 authRoutes(app);
 userRoutes(app);
 bookingRoutes(app);
+showRoutes(app);
 
 app.listen(process.env.PORT, async ()=>{
     console.log(`server started at localhost:${process.env.PORT}`);

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const showSchema = new mongoose.Schema({
-    TheatreId: {
+    theatreId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
@@ -10,7 +10,7 @@ const showSchema = new mongoose.Schema({
         required: true
     },
     timing: {
-        type: Number,
+        type: String,
         required: true
     },
     noOfSeats: {
@@ -28,4 +28,4 @@ const showSchema = new mongoose.Schema({
 
 const show = mongoose.model('Show', showSchema);
 
-module.exports = showSchema;
+module.exports = show;
