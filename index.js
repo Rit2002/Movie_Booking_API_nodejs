@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth.routes.js');
 const userRoutes = require('./routes/user.routes.js');
 const bookingRoutes = require('./routes/booking.routes.js');
 const showRoutes = require('./routes/show.routes.js');
+const paymentRoutes = require('./routes/payment.routes.js');
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ authRoutes(app);
 userRoutes(app);
 bookingRoutes(app);
 showRoutes(app);
+paymentRoutes(app);
 
 app.listen(process.env.PORT, async ()=>{
     console.log(`server started at localhost:${process.env.PORT}`);
