@@ -13,6 +13,12 @@ const routes = (app) => {
         '/mba/api/v1/payments/:id',
         authMiddlewares.isAuthenticated,
         paymentController.getPaymentDetailsById
+    );
+
+    app.get(
+        '/mba/api/v1/payments',
+        authMiddlewares.isAuthenticated,
+        paymentController.getAllPayments
     )
 
 }
