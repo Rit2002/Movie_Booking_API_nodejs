@@ -1,21 +1,28 @@
 const theatreService = require('../services/theatre.services.js');
 const { STATUS } = require('../utils/constants.js');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody.js');
+const sendMail = require('../services/email.services.js');
 
 const create = async (req, res) => {
     try {
-        const response = await theatreService.createTheatre(req.body);
+      const response = await theatreService.createTheatre({...req.body, owner: req.user});
 
-        successResponseBody.data = response;
-        return res.status(STATUS_CODES.CREATED).json(successResponseBody);
+      sendMail(
+        'Successfull listing of theatre',
+        req.user,
+        `You have successfully listed your theatre with our platform`
+      );
+
+      successResponseBody.data = response;
+      return res.status(STATUS_CODES.CREATED).json(successResponseBody);
 
     } catch (error) {
 
-       if(error.err){
-          errorResponseBody.err = error.err;
-          errorResponseBody.message = 'Validation failed on few parameters';
-          return res.status(error.code).json(errorResponseBody);
-        }
+      if(error.err){
+        errorResponseBody.err = error.err;
+        errorResponseBody.message = 'Validation failed on few parameters';
+        return res.status(error.code).json(errorResponseBody);
+      }
 
       errorResponseBody.err = error;
       return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(errorResponseBody);      

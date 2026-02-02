@@ -1,12 +1,20 @@
 const Payment = require('../models/payment.model');
 const Booking = require('../models/booking.model');
 const User = require('../models/user.model');
+const Show = require('../models/show.model');
 
 const { STATUS_CODES, BOOKING_STATUS, PAYMENT_STATUS, USER_ROLE } = require('../utils/constants');
 
 const createPayment = async (data) => {
     try {
        const booking = await Booking.findById(data.bookingId);
+
+        const show = await Show.findOne({
+                   movieId: booking.movieId,
+                   theatreId: booking.theatreId,
+                   timing: booking.timing
+        });
+
        if(!booking) {
             throw {
                 err : 'No booking found for given id',
@@ -37,6 +45,8 @@ const createPayment = async (data) => {
         // returning failed payment to controller
         if(payment.status == PAYMENT_STATUS.failed) {
             booking.status = BOOKING_STATUS.cancelled;
+
+            
             await booking.save();
             await payment.save();
             return booking;
@@ -44,6 +54,9 @@ const createPayment = async (data) => {
 
         payment.status = PAYMENT_STATUS.success;
         booking.status = BOOKING_STATUS.successful;
+        show.noOfSeats -= booking.noOfSeats;
+        
+        await show.save();
         await booking.save();
         await payment.save();
 

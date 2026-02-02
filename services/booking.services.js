@@ -1,8 +1,18 @@
 const Booking = require('../models/booking.model.js');
+const Show = require('../models/show.model.js');
 const { STATUS_CODES } = require('../utils/constants.js');
 
 const createBooking = async (data) => {
     try {
+        const show = await Show.findOne({
+            movieId: data.movieId,
+            theatreId: data.theatreId,
+            timing: data.timing
+        });
+        console.log(show);
+        
+        data.totalCost = data.noOfSeats * show.price;
+
         const response = await Booking.create(data);
         return response;
 

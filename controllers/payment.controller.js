@@ -1,6 +1,10 @@
 const paymentService = require('../services/payment.services');
 const { BOOKING_STATUS, STATUS_CODES } = require('../utils/constants');
 const { errorResponseBody, successResponseBody } = require('../utils/responsebody');
+const User = require('../models/user.model');
+const Movie = require('../models/movies.model');
+const Theatre = require('../models/theatre.model');
+const sendMail = require('../services/email.services');
 
 const create = async (req, res) => {
     try {
@@ -20,9 +24,19 @@ const create = async (req, res) => {
             return res.status(STATUS_CODES.PAYMENT_REQUIRED).json(errorResponseBody);
         }
 
+        const movie = await Movie.findById(response.movieId);
+        const theatre = await Theatre.findById(response.theatreId);
+
         // if everything is right
         successResponseBody.data = response;
         successResponseBody.message = 'Booking completed successfully';
+
+       sendMail(
+            'Your Booking is successfull',
+            response.userId,
+            `Your booking for ${movie.name} in ${theatre.name} hall for ${movie.noOfSeats} seats on ${response.timing} is successfull. Your booking id is ${response.id}`
+        );
+
         
         return res.status(STATUS_CODES.OK).json(successResponseBody);
 

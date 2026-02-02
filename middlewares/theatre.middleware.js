@@ -12,17 +12,17 @@ const { STATUS_CODES } = require('../utils/constants.js');
 const validateTheatreCreateReq = async (req, res, next) => {
 
     if(!req.body.name){
-        errorResponseBody.message = 'The name NOT found';
+        errorResponseBody.err = 'The name NOT found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(!req.body.pincode){
-        errorResponseBody.message = 'The pincode NOT found';
+        errorResponseBody.err = 'The pincode NOT found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(!req.body.city){
-        errorResponseBody.message = 'The city NOT found';
+        errorResponseBody.err = 'The city NOT found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
@@ -39,27 +39,27 @@ const validateTheatreCreateReq = async (req, res, next) => {
 const validateUpdateMovieRequest =  (req, res, next) => {
 
     if(req.body.insert == undefined){
-        errorResponseBody.message = 'No insert parameter found';
+        errorResponseBody.err = 'No insert parameter found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(!req.params.id){
-        errorResponseBody.message = 'No Theatre id found';
+        errorResponseBody.err = 'No Theatre id found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(!req.body.movieIds){
-        errorResponseBody.message = 'No movieIds parameter found';
+        errorResponseBody.err = 'No movieIds parameter found';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(!(req.body.movieIds instanceof Array)){
-        errorResponseBody.message = 'Expected Array of movies';
+        errorResponseBody.err = 'Expected Array of movies';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
     if(req.body.movieIds.length == 0){
-        errorResponseBody.message = 'No movies are present to be updated';
+        errorResponseBody.err = 'No movies are present to be updated';
         return res.status(STATUS_CODES.BAD_REQUEST).json(errorResponseBody);
     }
 
