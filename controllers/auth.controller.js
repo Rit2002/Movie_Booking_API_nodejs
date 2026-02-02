@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 
 const userService = require('../services/user.services.js');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody.js');
