@@ -33,7 +33,7 @@ app.listen(process.env.PORT, async ()=>{
     console.log(`server started at localhost:${process.env.PORT}`);
     
     try {
-        if(process.env.NODE_URL == 'production') {
+        if(process.env.NODE_ENV == 'production') {
             await mongoose.connect(process.env.PROD_DB_URL);
             console.log(`Successfully Connected to mongoDB Atlas`);
         }
@@ -41,7 +41,7 @@ app.listen(process.env.PORT, async ()=>{
             await mongoose.connect(process.env.DB_URL);
             console.log(`Successfully Connected to mongoDB Compass`);
         }
-        
+
     } catch (error) {
         console.log(error);      
     }    
